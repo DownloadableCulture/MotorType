@@ -22,6 +22,12 @@ public class MotorMovement : MonoBehaviour
         if (accelerationPressed > 0f)
         {
             _rb.AddForce(transform.forward * _motorForce, ForceMode.Force);
+            Debug.Log("Move");
+        }
+
+        if (breakPressed > 0f)
+        {
+            Debug.Log("Stop");
         }
 
     }
