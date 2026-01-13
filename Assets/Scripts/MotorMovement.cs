@@ -5,8 +5,10 @@ public class MotorMovement : MonoBehaviour
 {
     public InputActionReference Accelerate;
     public InputActionReference Brake;
+    public InputActionReference Steer;
 
     [SerializeField] float _motorForce = 100f;
+    [SerializeField] float _steerSpeed = 40f;
     [SerializeField, Range(1.5f, 3f)] float _breakModifier = 2f;
     private float _brakeForce;
     private Rigidbody _rb;
@@ -20,7 +22,8 @@ public class MotorMovement : MonoBehaviour
     void FixedUpdate()
     {
         float accelerationPressed = Accelerate.action.ReadValue<float>();
-        float brakePressed = Brake.action.ReadValue<float>();
+        float brakePressed = Brake.action.ReadValue<float>(); 
+        float steerValue = Steer.action.ReadValue<Vector2>().x;
 
         Vector3 forward = transform.forward;
         Vector3 velocity = _rb.linearVelocity;
@@ -36,6 +39,12 @@ public class MotorMovement : MonoBehaviour
             Vector3 brakeForce = -velocity.normalized * _brakeForce;
             _rb.AddForce(brakeForce, ForceMode.Force);
             Debug.Log("Stopping...");
+        }
+
+        if (Mathf.Abs(steerValue) > 0.01f)
+        {
+            Quaternion turn = Quaternion.Euler(0f, steerValue * _steerSpeed * Time.fixedDeltaTime, 0f);
+            _rb.MoveRotation(_rb.rotation * turn);
         }
     }
     private void OnEnable()
