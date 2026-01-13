@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class MotorMovement : MonoBehaviour
 {
     public InputActionReference Accelerate;
+    public InputActionReference Break;
 
     [SerializeField] float _motorForce = 100f;
     private Rigidbody _rb;
@@ -15,20 +16,24 @@ public class MotorMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        float isPressed = Accelerate.action.ReadValue<float>();
+        float accelerationPressed = Accelerate.action.ReadValue<float>();
+        float breakPressed = Break.action.ReadValue<float>();
 
-        if (isPressed > 0f)
+        if (accelerationPressed > 0f)
         {
             _rb.AddForce(transform.forward * _motorForce, ForceMode.Force);
         }
+
     }
     private void OnEnable()
     {
         Accelerate.action.Enable();
+        Break.action.Enable();
     }
 
     private void OnDisable()
     {
         Accelerate.action.Disable();
+        Break.action.Disable();
     }
 }
