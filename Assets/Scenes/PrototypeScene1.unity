@@ -479,6 +479,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
   m_Asset: {fileID: -944628639613478452, guid: 3355707ca4fc6f54cbd4bceb02b929e1, type: 3}
   m_ActionId: b884db5e-7c74-4c47-92b7-6ecd334db382
+--- !u!114 &1492988653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Pro Controller/Steer
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 3355707ca4fc6f54cbd4bceb02b929e1, type: 3}
+  m_ActionId: a7663ace-97f5-4a1e-8ca8-761d6e826eac
 --- !u!1 &1763121882 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5135465080687289386, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
@@ -674,6 +688,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4334173480431478258, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: m_Constraints
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 5183795932379197350, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -687,12 +705,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1475537014}
     - target: {fileID: 5421966473700581410, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: Steer
+      value: 
+      objectReference: {fileID: 1492988653}
+    - target: {fileID: 5421966473700581410, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: Accelerate
       value: 
       objectReference: {fileID: 1858272266}
     - target: {fileID: 5421966473700581410, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: _motorForce
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5421966473700581410, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: _steerSpeed
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 7104550923789935341, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: m_Name
