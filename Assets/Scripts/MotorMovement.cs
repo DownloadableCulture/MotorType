@@ -41,7 +41,7 @@ public class MotorMovement : MonoBehaviour
             Debug.Log("Stopping...");
         }
 
-        if (Mathf.Abs(steerValue) > 0.01f)
+        if (Mathf.Abs(steerValue) > 0.1f)
         {
             Quaternion turn = Quaternion.Euler(0f, steerValue * _steerSpeed * Time.fixedDeltaTime, 0f);
             _rb.MoveRotation(_rb.rotation * turn);
