@@ -7,6 +7,9 @@ public class MotorMovement : MonoBehaviour
     public InputActionReference Brake;
     public InputActionReference Steer;
 
+    [SerializeField] Transform _frontWheel;
+    [SerializeField] Transform _rearWheel;
+
     [SerializeField] float _motorForce = 100f;
     [SerializeField] float _steerSpeed = 40f;
     [SerializeField, Range(1.5f, 3f)] float _breakModifier = 2f;
@@ -26,7 +29,7 @@ public class MotorMovement : MonoBehaviour
         float brakePressed = Brake.action.ReadValue<float>(); 
         float steerValue = Steer.action.ReadValue<Vector2>().x;
 
-        Vector3 forward = transform.forward;
+        Vector3 forward = (_frontWheel.position - _rearWheel.position).normalized;
         Vector3 velocity = _rb.linearVelocity;
 
         if (accelerationPressed > 0f)
