@@ -10,6 +10,7 @@ public class MotorMovement : MonoBehaviour
     [SerializeField] float _motorForce = 100f;
     [SerializeField] float _steerSpeed = 40f;
     [SerializeField, Range(1.5f, 3f)] float _breakModifier = 2f;
+    [SerializeField] InputSettings _inputSettings;
     private float _brakeForce;
     private Rigidbody _rb;
     void Awake()
@@ -41,7 +42,7 @@ public class MotorMovement : MonoBehaviour
             Debug.Log("Stopping...");
         }
 
-        if (Mathf.Abs(steerValue) > 0.1f)
+        if (Mathf.Abs(steerValue) > _inputSettings.DeadZone)
         {
             Quaternion turn = Quaternion.Euler(0f, steerValue * _steerSpeed * Time.fixedDeltaTime, 0f);
             _rb.MoveRotation(_rb.rotation * turn);

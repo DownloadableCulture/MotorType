@@ -512,6 +512,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SteeringWheelController
   Steer: {fileID: 650999937}
   _maxRotationAngle: 30
+  _inputSettings: {fileID: 11400000, guid: 1fae0f39be775804ba6cca89673df150, type: 2}
 --- !u!114 &1858272266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -720,6 +721,10 @@ PrefabInstance:
       propertyPath: _steerSpeed
       value: 75
       objectReference: {fileID: 0}
+    - target: {fileID: 5421966473700581410, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: _inputSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: 1fae0f39be775804ba6cca89673df150, type: 2}
     - target: {fileID: 7104550923789935341, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: m_Name
       value: Player
