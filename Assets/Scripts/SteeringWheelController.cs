@@ -19,13 +19,17 @@ public class SteeringWheelController : MonoBehaviour
     private void Update()
     {
         Vector2 leftStick = Steer.action.ReadValue<Vector2>();
+
         float steerValue = -leftStick.x;
 
-        float rotationZ = steerValue * _maxRotationAngle;
-        transform.localEulerAngles = new Vector3(
-            transform.localEulerAngles.x,
-            transform.localEulerAngles.y,
-            rotationZ
-        );
+        if (Mathf.Abs(steerValue) > 0.1f)
+        {
+            float rotationZ = steerValue * _maxRotationAngle;
+            transform.localEulerAngles = new Vector3(
+                transform.localEulerAngles.x,
+                transform.localEulerAngles.y,
+                rotationZ
+            );
+        }
     }
 }
