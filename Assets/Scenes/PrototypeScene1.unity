@@ -511,7 +511,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteeringWheelController
   Steer: {fileID: 650999937}
-  _maxRotationAngle: 30
+  _maxRotationAngle: 45
+  _returnSpeed: 12
   _inputSettings: {fileID: 11400000, guid: 1fae0f39be775804ba6cca89673df150, type: 2}
 --- !u!114 &1858272266
 MonoBehaviour:
