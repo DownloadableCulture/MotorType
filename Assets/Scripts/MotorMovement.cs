@@ -3,14 +3,17 @@ using UnityEngine.InputSystem;
 
 public class MotorMovement : MonoBehaviour
 {
+    [Header("Input Actions")]
     public InputActionReference Accelerate;
     public InputActionReference Brake;
     public InputActionReference Steer;
 
+    [Header("References")]
     [SerializeField] SteeringWheelController _steeringWheel;
     [SerializeField] Transform _frontWheel;
     [SerializeField] Transform _rearWheel;
 
+    [Header("Variables")]
     [SerializeField] float _motorForce = 100f;
     [SerializeField] float _steerSpeed = 40f;
     [SerializeField] float _maxSteerAngle = 45f;
@@ -24,7 +27,10 @@ public class MotorMovement : MonoBehaviour
         _brakeForce = _motorForce * _breakModifier;
     }
 
-    // Update is called once per frame
+    void HandleAcceleratiom()
+    {
+
+    }
     void FixedUpdate()
     {
         float accelerationPressed = Accelerate.action.ReadValue<float>();
