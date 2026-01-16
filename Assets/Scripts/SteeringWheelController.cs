@@ -5,6 +5,8 @@ using static UnityEngine.GraphicsBuffer;
 public class SteeringWheelController : MonoBehaviour
 {
     public InputActionReference Steer;
+    public float CurrentSteerValue { get; private set; }
+
     [SerializeField] float _maxRotationAngle = 30f;
     [SerializeField] float _returnSpeed = 12f;
     [SerializeField] InputSettings _inputSettings;
@@ -27,6 +29,8 @@ public class SteeringWheelController : MonoBehaviour
 
         if (Mathf.Abs(steerValue) < _inputSettings.DeadZone)
             steerValue = 0f;
+
+            CurrentSteerValue = steerValue;
         
 
             float targetRotationZ = steerValue * _maxRotationAngle;
