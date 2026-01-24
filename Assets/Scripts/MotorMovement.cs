@@ -41,6 +41,7 @@ public class MotorMovement : MonoBehaviour
 
     void HandleSteering()
     {
+
         _moveDirection =
     Quaternion.Euler(0f, _steerInput * _maxSteerAngle, 0f)
     * transform.forward;
@@ -48,23 +49,33 @@ public class MotorMovement : MonoBehaviour
         _moveDirection.y = 0f;
         _moveDirection.Normalize();
 
-        Quaternion targetRotation =
+
+        if (_rb.linearVelocity.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRotation =
             Quaternion.LookRotation(_moveDirection, Vector3.up);
 
-        _rb.MoveRotation(
-            Quaternion.RotateTowards(
-                _rb.rotation,
-                targetRotation,
-                _steerSpeed * Time.fixedDeltaTime
-            )
-        );
+            _rb.MoveRotation(
+                Quaternion.RotateTowards(
+                    _rb.rotation,
+                    targetRotation,
+                    _steerSpeed * Time.fixedDeltaTime
+                )
+            );
+        }
     }
     void HandleAcceleration()
     {
-        if (_accelerationInput <= 0f)
-            return;
 
-        _rb.AddForce(_moveDirection * _motorForce, ForceMode.Force);
+
+        float engineForce = _accelerationInput * _motorForce;
+        float momentumForce = Mathf.Max(0f, (1f - _accelerationInput) * _motorForce * 0.3f);
+        float combinedForce = momentumForce + engineForce;
+
+        if (combinedForce <= 0f)
+            return;
+        _rb.AddForce(_moveDirection * combinedForce, ForceMode.Force);
+
     }
     void HandleBrake()
     {
