@@ -13,13 +13,15 @@ public class MotorMovement : MonoBehaviour
     [SerializeField] Transform _frontWheel;
     [SerializeField] Transform _rearWheel;
     [SerializeField] InputSettings _inputSettings;
+    [SerializeField] Transform _visualBody;
 
     [Header("Variables")]
     [SerializeField] float _motorForce = 100f;
     [SerializeField] float _steerSpeed = 40f;
     [SerializeField] float _maxSteerAngle = 45f;
     [SerializeField, Range(1.5f, 3f)] float _breakModifier = 2f;
-    
+    [SerializeField, Range(1f, 20f)] float rotationSmooth = 10f;
+
     private float _brakeForce;
     private float _accelerationInput;
     private float _brakeInput;
@@ -30,6 +32,7 @@ public class MotorMovement : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        _rb.interpolation = RigidbodyInterpolation.Interpolate;
         _brakeForce = _motorForce * _breakModifier;
     }
     void ReadInput()
@@ -96,6 +99,19 @@ public class MotorMovement : MonoBehaviour
         HandleSteering();
         HandleAcceleration();
         HandleBrake();
+
+    }
+
+    private void LateUpdate()
+    {
+        if (_rb.linearVelocity.sqrMagnitude > 0.01f && _visualBody != null)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(_moveDirection, Vector3.up);
+            _visualBody.rotation = Quaternion.Slerp(_visualBody.rotation, targetRot, rotationSmooth * Time.deltaTime);
+        }
+
+        Debug.Log("RigidBody rotation: " + _rb.rotation.eulerAngles);
+
     }
     private void OnEnable()
     {
