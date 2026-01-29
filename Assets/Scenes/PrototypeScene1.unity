@@ -119,6 +119,20 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &45278960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Pro Controller/Motor/Steer
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 3355707ca4fc6f54cbd4bceb02b929e1, type: 3}
+  m_ActionId: a7663ace-97f5-4a1e-8ca8-761d6e826eac
 --- !u!1 &91553484
 GameObject:
   m_ObjectHideFlags: 0
@@ -1494,6 +1508,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7736061684334843654, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: Steer
+      value: 
+      objectReference: {fileID: 45278960}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
