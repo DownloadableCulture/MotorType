@@ -110,8 +110,6 @@ public class MotorMovement : MonoBehaviour
             _visualBody.rotation = Quaternion.Slerp(_visualBody.rotation, targetRot, rotationSmooth * Time.deltaTime);
         }
 
-        Debug.Log("RigidBody rotation: " + _rb.rotation.eulerAngles);
-
     }
     private void OnEnable()
     {
