@@ -108,7 +108,7 @@
                     "type": "Value",
                     "id": "7a28f447-86e8-479e-a563-e6dd13d8ad50",
                     "expectedControlType": "Vector2",
-                    "processors": "ScaleVector2(x=100,y=100)",
+                    "processors": "ScaleVector2(x=100,y=100),StickDeadzone",
                     "interactions": "",
                     "initialStateCheck": true
                 },
@@ -137,9 +137,9 @@
                 {
                     "name": "",
                     "id": "54d80448-6234-4a0e-a653-0294da8724a3",
-                    "path": "<Gamepad>/rightStick",
+                    "path": "<SwitchProControllerHID>/rightStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone",
                     "groups": "",
                     "action": "Look",
                     "isComposite": false,
@@ -148,7 +148,7 @@
                 {
                     "name": "",
                     "id": "e8cb3cbe-09a6-443e-95f2-c8fb01504bf2",
-                    "path": "<SwitchProControllerHID>/rightTrigger",
+                    "path": "<SwitchProControllerHID>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
