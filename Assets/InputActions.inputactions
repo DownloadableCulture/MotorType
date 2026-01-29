@@ -157,6 +157,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Pro Controller/General",
+            "id": "0cf7e084-32d8-4b0f-9b73-695c62ceda7e",
+            "actions": [
+                {
+                    "name": "Toggle Camera",
+                    "type": "Button",
+                    "id": "2cd54c63-3c79-4016-9a43-d97883a4d08f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "eb644b27-8550-4964-997d-131ad540e559",
+                    "path": "<SwitchProControllerHID>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []
