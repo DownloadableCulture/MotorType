@@ -106,8 +106,7 @@ public class MotorMovement : MonoBehaviour
     {
         if (_rb.linearVelocity.sqrMagnitude > 0.01f && _visualBody != null)
         {
-            Quaternion targetRot = Quaternion.LookRotation(_moveDirection, Vector3.up);
-            _visualBody.rotation = Quaternion.Slerp(_visualBody.rotation, targetRot, rotationSmooth * Time.deltaTime);
+            _visualBody.rotation = _rb.rotation;  
         }
 
 
