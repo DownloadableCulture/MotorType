@@ -1131,6 +1131,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7905042117429374022, guid: 86564fc41bc384345a339313fc36a865, type: 3}
   m_PrefabInstance: {fileID: 1349302100}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &673606425 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2751529482900682225, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+  m_PrefabInstance: {fileID: 1207773085}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &729384667
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1260,81 +1265,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7905042117429374022, guid: 86564fc41bc384345a339313fc36a865, type: 3}
   m_PrefabInstance: {fileID: 932697892}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &768755768
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 768755769}
-  - component: {fileID: 768755770}
-  m_Layer: 0
-  m_Name: CinemachineCamera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &768755769
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 768755768}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0.19603172, y: 0, z: 0, w: 0.9805976}
-  m_LocalPosition: {x: 0, y: 1.24, z: -0.21}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 869536678}
-  m_LocalEulerAnglesHint: {x: 22.61, y: 0, z: 0}
---- !u!114 &768755770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 768755768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
-  Priority:
-    Enabled: 0
-    m_Value: 0
-  OutputChannel: 1
-  StandbyUpdate: 2
-  m_StreamingVersion: 20241001
-  m_LegacyPriority: 0
-  Target:
-    TrackingTarget: {fileID: 0}
-    LookAtTarget: {fileID: 0}
-    CustomLookAtTarget: 0
-  Lens:
-    FieldOfView: 60
-    OrthographicSize: 5
-    NearClipPlane: 0.3
-    FarClipPlane: 1000
-    Dutch: 0
-    ModeOverride: 0
-    PhysicalProperties:
-      GateFit: 2
-      SensorSize: {x: 21.946, y: 16.002}
-      LensShift: {x: 0, y: 0}
-      FocusDistance: 10
-      Iso: 200
-      ShutterSpeed: 0.005
-      Aperture: 16
-      BladeCount: 5
-      Curvature: {x: 2, y: 11}
-      BarrelClipping: 0.25
-      Anamorphism: 0
-  BlendHint: 0
 --- !u!4 &774852450 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7905042117429374022, guid: 86564fc41bc384345a339313fc36a865, type: 3}
@@ -1406,11 +1336,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 7905042117429374022, guid: 86564fc41bc384345a339313fc36a865, type: 3}
   m_PrefabInstance: {fileID: 1752391967}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &869536678 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1134217923261692942, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
-  m_PrefabInstance: {fileID: 1207773085}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &932697892
 PrefabInstance:
@@ -1712,11 +1637,15 @@ PrefabInstance:
     - target: {fileID: 5421966473700581410, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: _visualBody
       value: 
-      objectReference: {fileID: 1565766057}
+      objectReference: {fileID: 0}
     - target: {fileID: 5623420636505399438, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: Steer
       value: 
       objectReference: {fileID: 944649865}
+    - target: {fileID: 5623420636505399438, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: _inputSettings
+      value: 
+      objectReference: {fileID: 11400000, guid: bc3665732954bb5419e706eabee3ec57, type: 2}
     - target: {fileID: 6529130008115695424, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -1763,13 +1692,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 1134217923261692942, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1565766057}
-    - targetCorrespondingSourceObject: {fileID: 1134217923261692942, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 768755769}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
 --- !u!1 &1212894534
@@ -1883,7 +1806,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 1565766057}
+    TrackingTarget: {fileID: 673606425}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -2390,37 +2313,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86564fc41bc384345a339313fc36a865, type: 3}
---- !u!1 &1565766056
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1565766057}
-  m_Layer: 0
-  m_Name: VisualBody
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1565766057
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565766056}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.3}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 869536678}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1596659930 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7905042117429374022, guid: 86564fc41bc384345a339313fc36a865, type: 3}

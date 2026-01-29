@@ -27,7 +27,7 @@ public class SteeringWheelController : MonoBehaviour
 
         float steerValue = -leftStick.x;
 
-        if (Mathf.Abs(steerValue) < _inputSettings.DeadZone)
+        if (Mathf.Abs(steerValue) < _inputSettings.defaultDeadzoneMin)
             steerValue = 0f;
 
             CurrentSteerValue = steerValue;

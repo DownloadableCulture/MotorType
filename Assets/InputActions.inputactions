@@ -71,7 +71,7 @@
                     "id": "6a09d2df-e81c-4538-bfc3-38170e24b6d0",
                     "path": "<SwitchProControllerHID>/leftStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone",
                     "groups": "",
                     "action": "Steer",
                     "isComposite": false,
