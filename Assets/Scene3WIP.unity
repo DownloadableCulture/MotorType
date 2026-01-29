@@ -1902,6 +1902,14 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6169000628172341538, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: m_LODs.Array.data[0].renderers.Array.data[0].renderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6169000628172341538, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: m_LODs.Array.data[0].renderers.Array.data[1].renderer
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7104550923789935341, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: m_Name
       value: PlayerMotor
@@ -1912,13 +1920,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7538223522867248657, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7959631547877869867, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7538223522867248657, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+    - {fileID: 7959631547877869867, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+    - {fileID: 4745607807081866868, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+    - {fileID: 2943386131299934202, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+    - {fileID: 955852633928689881, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+    - {fileID: 5929369654409543468, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+    - {fileID: 272194771136186989, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+    - {fileID: 1285068215887544647, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2751529482900682225, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
