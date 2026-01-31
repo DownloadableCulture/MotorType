@@ -70,16 +70,14 @@ public class MotorMovement : MonoBehaviour
     void HandleAcceleration()
     {
 
+        if (_accelerationInput <= 0f)
+            return;
 
         float engineForce = _accelerationInput * _motorForce;
-        float momentumForce = Mathf.Max(0f, (1f - _accelerationInput) * _motorForce * 0.3f);
-        float combinedForce = momentumForce + engineForce;
-
-        if (combinedForce <= 0f)
-            return;
-        _rb.AddForce(_moveDirection * combinedForce, ForceMode.Force);
+        _rb.AddForce(_moveDirection * engineForce, ForceMode.Force);
 
     }
+
     void HandleBrake()
     {
         if (_brakeInput <= 0f)
@@ -99,6 +97,7 @@ public class MotorMovement : MonoBehaviour
         HandleSteering();
         HandleAcceleration();
         HandleBrake();
+  
 
     }
 
