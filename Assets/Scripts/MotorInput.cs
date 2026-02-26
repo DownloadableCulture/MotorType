@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class MotorInput : MonoBehaviour
+public class MotorInput : MonoBehaviour, IMotorInput
 {
     [Header("Input Actions")]
     public InputActionReference Accelerate;

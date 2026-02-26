@@ -3,7 +3,9 @@ using UnityEngine;
 public class MotorMovement : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] MotorInput _motorInput;
+    [SerializeField] MotorInput _motorInputComponent; // Concrete type for Inspector
+    private IMotorInput _motorInput; // Interface for logic
+
     [SerializeField] Transform _frontWheel;
     [SerializeField] Transform _rearWheel;
     [SerializeField] Transform _visualBody;
@@ -24,12 +26,13 @@ public class MotorMovement : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _rb.interpolation = RigidbodyInterpolation.Interpolate;
         _brakeForce = _motorForce * _breakModifier;
+        _motorInput = _motorInputComponent; // Assign for interface use
     }
 
     void HandleSteering()
     {
         float steerInput = _motorInput != null ? _motorInput.SteerInput : 0f;
-        
+
         _moveDirection =
             Quaternion.Euler(0f, steerInput * _maxSteerAngle, 0f)
             * transform.forward;

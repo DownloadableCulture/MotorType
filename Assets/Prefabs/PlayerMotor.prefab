@@ -107,7 +107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f3d2e3532a0874cb97463776b6c966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MotorMovement
-  _motorInput: {fileID: 635036203601005766}
+  _motorInputComponent: {fileID: 635036203601005766}
   _frontWheel: {fileID: 4101624447451140125}
   _rearWheel: {fileID: 6008037762054130556}
   _visualBody: {fileID: 2751529482900682225}
