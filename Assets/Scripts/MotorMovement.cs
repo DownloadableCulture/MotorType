@@ -28,8 +28,10 @@ public class MotorMovement : MonoBehaviour
 
     void HandleSteering()
     {
+        float steerInput = _motorInput != null ? _motorInput.SteerInput : 0f;
+        
         _moveDirection =
-            Quaternion.Euler(0f, _motorInput.SteerInput * _maxSteerAngle, 0f)
+            Quaternion.Euler(0f, steerInput * _maxSteerAngle, 0f)
             * transform.forward;
 
         _moveDirection.y = 0f;
@@ -52,16 +54,20 @@ public class MotorMovement : MonoBehaviour
 
     void HandleAcceleration()
     {
-        if (_motorInput.AccelerationInput <= 0f)
+        float accelerationInput = _motorInput != null ? _motorInput.AccelerationInput : 0f;
+
+        if (accelerationInput <= 0f)
             return;
 
-        float engineForce = _motorInput.AccelerationInput * _motorForce;
+        float engineForce = accelerationInput * _motorForce;
         _rb.AddForce(_moveDirection * engineForce, ForceMode.Force);
     }
 
     void HandleBrake()
     {
-        if (_motorInput.BrakeInput <= 0f)
+        float brakeInput = _motorInput != null ? _motorInput.BrakeInput : 0f;
+
+        if (brakeInput <= 0f)
             return;
 
         Vector3 velocity = _rb.linearVelocity;

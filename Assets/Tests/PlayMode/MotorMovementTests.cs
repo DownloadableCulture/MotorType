@@ -12,6 +12,7 @@ public class MotorMovementTests
         var rb = go.AddComponent<Rigidbody>();
         rb.useGravity = false;
 
+        // Only add MotorMovement, do not add or assign MotorInput
         go.AddComponent<MotorMovement>();
 
         yield return new WaitForFixedUpdate();

@@ -1389,11 +1389,45 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 86564fc41bc384345a339313fc36a865, type: 3}
+--- !u!1 &793996459 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7104550923789935341, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+  m_PrefabInstance: {fileID: 1207773085}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &793996463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793996459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9012d0f918ce1438e3525e4629186f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Scripts::MotorInput
+  Accelerate: {fileID: 908876708}
+  Brake: {fileID: 1396001416}
+  _steeringWheel: {fileID: 1456898520}
 --- !u!4 &821625709 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7905042117429374022, guid: 86564fc41bc384345a339313fc36a865, type: 3}
   m_PrefabInstance: {fileID: 1752391967}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &908876708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Pro Controller/Motor/Accelerate
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 3355707ca4fc6f54cbd4bceb02b929e1, type: 3}
+  m_ActionId: 03c6a413-dd50-4086-bfbe-5131da5d686b
 --- !u!1001 &932697892
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1752,6 +1786,10 @@ PrefabInstance:
       propertyPath: Accelerate
       value: 
       objectReference: {fileID: 1669301202}
+    - target: {fileID: 5421966473700581410, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      propertyPath: _motorInput
+      value: 
+      objectReference: {fileID: 793996463}
     - target: {fileID: 5623420636505399438, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       propertyPath: Steer
       value: 
@@ -1768,6 +1806,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7104550923789935341, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 793996463}
     - targetCorrespondingSourceObject: {fileID: 3591771168809720131, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 629499828}
@@ -2212,6 +2253,31 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7905042117429374022, guid: 86564fc41bc384345a339313fc36a865, type: 3}
   m_PrefabInstance: {fileID: 792347575}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1396001416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1515ab76e54f068e2f2207940fab32, type: 3}
+  m_Name: Pro Controller/Motor/Brake
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.InputActionReference
+  m_Asset: {fileID: -944628639613478452, guid: 3355707ca4fc6f54cbd4bceb02b929e1, type: 3}
+  m_ActionId: b884db5e-7c74-4c47-92b7-6ecd334db382
+--- !u!114 &1456898520 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7736061684334843654, guid: 5309a0f5a69175c4691a72780f90d04a, type: 3}
+  m_PrefabInstance: {fileID: 1207773085}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe7d652b29b339d4ba2e59ecbd610284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SteeringWheelController
 --- !u!1001 &1492214066
 PrefabInstance:
   m_ObjectHideFlags: 0
