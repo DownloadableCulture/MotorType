@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 1134217923261692942}
   - component: {fileID: 4334173480431478258}
   - component: {fileID: 5421966473700581410}
+  - component: {fileID: 635036203601005766}
   m_Layer: 0
   m_Name: PlayerMotor
   m_TagString: Untagged
@@ -106,19 +107,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f3d2e3532a0874cb97463776b6c966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MotorMovement
-  Accelerate: {fileID: 0}
-  Brake: {fileID: 0}
-  Steer: {fileID: 0}
-  _steeringWheel: {fileID: 5623420636505399438}
+  _motorInput: {fileID: 635036203601005766}
   _frontWheel: {fileID: 4101624447451140125}
   _rearWheel: {fileID: 6008037762054130556}
-  _inputSettings: {fileID: 11400000, guid: 1fae0f39be775804ba6cca89673df150, type: 2}
   _visualBody: {fileID: 2751529482900682225}
   _motorForce: 30
   _steerSpeed: 75
   _maxSteerAngle: 52.5
   _breakModifier: 2
   rotationSmooth: 10
+--- !u!114 &635036203601005766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7104550923789935341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9012d0f918ce1438e3525e4629186f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Scripts::MotorInput
+  Accelerate: {fileID: 0}
+  Brake: {fileID: 0}
+  _steeringWheel: {fileID: 7736061684334843654}
 --- !u!1001 &1738293116990525919
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -420,6 +432,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2374608482530230722, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2374608482530230722, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2374608482530230722, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5993811027322351980, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
       propertyPath: m_Name
       value: CruiserMotorcycleBlack (1)
@@ -487,9 +511,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5880761310500225857, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8161595153966155589}
+    - targetCorrespondingSourceObject: {fileID: 5880761310500225857, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5412509243503268146}
     - targetCorrespondingSourceObject: {fileID: 2068063403283086116, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9130987448826566142}
+    - targetCorrespondingSourceObject: {fileID: 2068063403283086116, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8831371852606387907}
   m_SourcePrefab: {fileID: 100100000, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
 --- !u!1 &3591771168809720131 stripped
 GameObject:
@@ -517,6 +547,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.30641064
   m_Center: {x: 0.000000022351742, y: 0.000000014901168, z: -7.1054274e-15}
+--- !u!114 &5412509243503268146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3591771168809720131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb3f22b7cdf5244abb03426fc92fecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WheelRotation
+  _wheel: {fileID: 0}
+  _rotationSpeed: 360
 --- !u!1 &3704891048007347054 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5993811027322351980, guid: c9df06cd9c8ed0f429782b341cd40750, type: 3}
@@ -638,3 +682,17 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.3060192
   m_Center: {x: 0.000000115484, y: 0.0000006109476, z: -0.0000012516975}
+--- !u!114 &8831371852606387907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9004698060201320742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb3f22b7cdf5244abb03426fc92fecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WheelRotation
+  _wheel: {fileID: 0}
+  _rotationSpeed: 360
