@@ -2,7 +2,7 @@ name: Movement_Tests_Workflow
 on: workflow_dispatch
 jobs:
     firstjob:
-      runs-on: ubuntu_latest
+      runs-on: ubuntu-latest
       steps:
         - name: Execute tests
           run: echo "Insert Test Methods Here" 
