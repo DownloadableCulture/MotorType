@@ -52,6 +52,28 @@ public class MotorMovementTests
         Object.Destroy(go);
     }
 
+    [UnityTest]
+    public IEnumerator Rigidbody_Velocity_Decreases_WithBrake()
+    {
+        var go = new GameObject("Motor");
+        var rb = go.AddComponent<Rigidbody>();
+        rb.useGravity = false;
+        var movement = go.AddComponent<MotorMovement>();
+        var mockInput = new MockMotorInput
+        {
+            AccelerationInput = 0f,
+            BrakeInput = 1f,
+            SteerInput = 0f
+        };
+        typeof(MotorMovement)
+            .GetField("_motorInput", BindingFlags.NonPublic | BindingFlags.Instance)
+            .SetValue(movement, mockInput);
+        rb.linearVelocity = Vector3.forward * 10f;
+        yield return new WaitForFixedUpdate();
+        Assert.Less(rb.linearVelocity.magnitude, 9.5f, "Rigidbody should decelerate when BrakeInput > 0");
+        Object.Destroy(go);
+    }
+
     // Mock class for IMotorInput
     private class MockMotorInput : IMotorInput
     {
