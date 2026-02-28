@@ -6,6 +6,8 @@ jobs:
   test:
     name: Run Unity Tests
     runs-on: ubuntu-latest
+    container:
+      image: unityci/editor:windows-6000.3.10f1-base-3.2.1
     steps:
       - uses: actions/checkout@v4
         with:
