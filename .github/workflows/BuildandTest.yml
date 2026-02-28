@@ -29,6 +29,7 @@ jobs:
           path: TestResults
           
   buildForAllSupportedPlatforms:
+    needs: test
     name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
     strategy:
