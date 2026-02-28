@@ -6,25 +6,12 @@ jobs:
   test:
     name: Run Unity Tests
     runs-on: ubuntu-latest
-    container:
-      image: unityci/editor:windows-6000.3.10f1-base-3.2.1
     steps:
       - uses: actions/checkout@v4
+      - uses: gameci/unity-test-runner@v2
         with:
-          fetch-depth: 0
-          lfs: true
-      - uses: actions/cache@v3
-        with:
-          path: Library
-          key: Library-Test
-          restore-keys: Library-
-      - name: Run Unity PlayMode Tests
-        run: |
-          xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
-          unity-editor -runTests \
-            -projectPath . \
-            -testPlatform PlayMode \
-            -testResults TestResults/results.xml
+          unityVersion: 6000.3.1f1
+          testMode: playmode
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
