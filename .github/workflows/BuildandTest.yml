@@ -55,3 +55,25 @@ jobs:
         with:
           name: Build-${{ matrix.targetPlatform }}
           path: build/${{ matrix.targetPlatform }}
+
+  deploy:
+    needs: buildForAllSupportedPlatforms
+    runs-on: ubuntu-latest
+  
+    steps:
+      # Download the build artifact from the previous job
+      - uses: actions/download-artifact@v4
+        with:
+          name: Build-StandaloneWindows
+          path: build
+  
+      # Install Butler (official GitHub Action)
+      - name: Install Butler
+        uses: game-ci/butler-action@v1
+  
+      # Deploy to itch.io
+      - name: Deploy to itch.io
+        run: |
+          ./butler push build/StandaloneWindows jeleeexe/cylinder-city:windows
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
