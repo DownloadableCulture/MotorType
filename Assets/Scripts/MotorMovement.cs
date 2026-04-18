@@ -33,17 +33,16 @@ public class MotorMovement : MonoBehaviour
     {
         float steerInput = _motorInput != null ? _motorInput.SteerInput : 0f;
 
-        _moveDirection =
-            Quaternion.Euler(0f, steerInput * _maxSteerAngle, 0f)
-            * transform.forward;
+        Vector3 groundNormal = GetApproximateGroundNormal();
 
-        _moveDirection.y = 0f;
-        _moveDirection.Normalize();
+        // Project forward onto the slope
+        Vector3 forwardOnSlope = Vector3.ProjectOnPlane(transform.forward, groundNormal).normalized;
+        Quaternion steerRotation = Quaternion.AngleAxis(steerInput * _maxSteerAngle, groundNormal);
+        _moveDirection = steerRotation * forwardOnSlope;
 
         if (_rb.linearVelocity.sqrMagnitude > 0.01f)
         {
-            Quaternion targetRotation =
-                Quaternion.LookRotation(_moveDirection, Vector3.up);
+            Quaternion targetRotation = Quaternion.LookRotation(_moveDirection, groundNormal);
 
             _rb.MoveRotation(
                 Quaternion.RotateTowards(
@@ -62,8 +61,11 @@ public class MotorMovement : MonoBehaviour
         if (accelerationInput <= 0f)
             return;
 
+        Vector3 groundNormal = GetApproximateGroundNormal();
+        Vector3 moveDirectionOnSlope = Vector3.ProjectOnPlane(_moveDirection, groundNormal).normalized;
+
         float engineForce = accelerationInput * _motorForce;
-        _rb.AddForce(_moveDirection * engineForce, ForceMode.Force);
+        _rb.AddForce(moveDirectionOnSlope * engineForce, ForceMode.Force);
     }
 
     void HandleBrake()
@@ -87,6 +89,16 @@ public class MotorMovement : MonoBehaviour
         HandleSteering();
         HandleAcceleration();
         HandleBrake();
+
+        // Debug: Print ground normal and tire heights
+        if (_frontWheel != null && _rearWheel != null)
+        {
+            Vector3 groundNormal = GetApproximateGroundNormal();
+            float frontHeight = _frontWheel.position.y;
+            float rearHeight = _rearWheel.position.y;
+
+            Debug.Log($"Ground Normal: {groundNormal}, Front Tire Height: {frontHeight}, Rear Tire Height: {rearHeight}");
+        }
     }
 
     private void LateUpdate()
@@ -95,5 +107,29 @@ public class MotorMovement : MonoBehaviour
         {
             _visualBody.rotation = _rb.rotation;
         }
+    }
+
+    private Vector3 GetApproximateGroundNormal()
+    {
+        if (_frontWheel == null || _rearWheel == null)
+            return Vector3.up;
+
+        Vector3 frontPos = _frontWheel.position;
+        Vector3 rearPos = _rearWheel.position;
+
+        // The direction from rear to front wheel
+        Vector3 wheelDir = (frontPos - rearPos).normalized;
+
+        // The right vector of the bike (perpendicular to wheel direction and up)
+        Vector3 bikeRight = Vector3.Cross(wheelDir, Vector3.up).normalized;
+
+        // The ground normal is perpendicular to both the wheel direction and the vector from rear to front projected onto the XZ plane
+        Vector3 groundNormal = Vector3.Cross(wheelDir, bikeRight).normalized;
+
+        // Ensure the normal points upwards
+        if (groundNormal.y < 0)
+            groundNormal = -groundNormal;
+
+        return groundNormal;
     }
 }
