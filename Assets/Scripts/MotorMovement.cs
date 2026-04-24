@@ -3,8 +3,8 @@ using UnityEngine;
 public class MotorMovement : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] MotorInput _motorInputComponent; // Concrete type for Inspector
-    private IMotorInput _motorInput; // Interface for logic
+    [SerializeField] MotorInput _motorInputComponent;
+    private IMotorInput _motorInput;
 
     [SerializeField] Transform _frontWheel;
     [SerializeField] Transform _rearWheel;
@@ -14,74 +14,28 @@ public class MotorMovement : MonoBehaviour
     [SerializeField] float _motorForce = 100f;
     [SerializeField] float _steerSpeed = 40f;
     [SerializeField] float _maxSteerAngle = 45f;
+    [SerializeField] float _minSteerAngle = 10f; // Now serialized
     [SerializeField, Range(1.5f, 3f)] float _breakModifier = 2f;
     [SerializeField, Range(1f, 20f)] float rotationSmooth = 10f;
+    [SerializeField, Range(0f, 1f)] float lateralFriction = 0.85f;
+    [SerializeField, Range(0.8f, 1.0f)] float _maxSteeringSpeedReduction = 0.98f;
+    [SerializeField, Range(0.95f, 1.0f)] float _minSteeringSpeedReduction = 1.0f;
 
     private float _brakeForce;
-    private Vector3 _moveDirection;
     private Rigidbody _rb;
+    private readonly float _speedReductionFactor = 12f;
+    private float _estimatedMaxSpeed;
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _rb.interpolation = RigidbodyInterpolation.Interpolate;
         _brakeForce = _motorForce * _breakModifier;
-        _motorInput = _motorInputComponent; // Assign for interface use
-    }
+        _motorInput = _motorInputComponent;
 
-    void HandleSteering()
-    {
-        float steerInput = _motorInput != null ? _motorInput.SteerInput : 0f;
-
-        Vector3 groundNormal = GetApproximateGroundNormal();
-
-        // Project forward onto the slope
-        Vector3 forwardOnSlope = Vector3.ProjectOnPlane(transform.forward, groundNormal).normalized;
-        Quaternion steerRotation = Quaternion.AngleAxis(steerInput * _maxSteerAngle, groundNormal);
-        _moveDirection = steerRotation * forwardOnSlope;
-
-        if (_rb.linearVelocity.sqrMagnitude > 0.01f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(_moveDirection, groundNormal);
-
-            _rb.MoveRotation(
-                Quaternion.RotateTowards(
-                    _rb.rotation,
-                    targetRotation,
-                    _steerSpeed * Time.fixedDeltaTime
-                )
-            );
-        }
-    }
-
-    void HandleAcceleration()
-    {
-        float accelerationInput = _motorInput != null ? _motorInput.AccelerationInput : 0f;
-
-        if (accelerationInput <= 0f)
-            return;
-
-        Vector3 groundNormal = GetApproximateGroundNormal();
-        Vector3 moveDirectionOnSlope = Vector3.ProjectOnPlane(_moveDirection, groundNormal).normalized;
-
-        float engineForce = accelerationInput * _motorForce;
-        _rb.AddForce(moveDirectionOnSlope * engineForce, ForceMode.Force);
-    }
-
-    void HandleBrake()
-    {
-        float brakeInput = _motorInput != null ? _motorInput.BrakeInput : 0f;
-
-        if (brakeInput <= 0f)
-            return;
-
-        Vector3 velocity = _rb.linearVelocity;
-
-        if (velocity.sqrMagnitude < 0.01f)
-            return;
-
-        Vector3 brakeForce = -velocity.normalized * _brakeForce;
-        _rb.AddForce(brakeForce, ForceMode.Force);
+        // Calculate and print estimated max speed
+        _estimatedMaxSpeed = (_rb.linearDamping > 0f ? _motorForce / _rb.linearDamping : float.PositiveInfinity) - _speedReductionFactor;
+        Debug.Log($"[MotorMovement] Estimated Max Speed: {_estimatedMaxSpeed:F2} (MotorForce: {_motorForce}, LinearDamping: {_rb.linearDamping})");
     }
 
     void FixedUpdate()
@@ -89,16 +43,99 @@ public class MotorMovement : MonoBehaviour
         HandleSteering();
         HandleAcceleration();
         HandleBrake();
+        ApplyLateralFriction();
+        ApplySteeringSpeedReduction();
+    }
 
-        // Debug: Print ground normal and tire heights
+    void HandleSteering()
+    {
+        float steerInput = _motorInput != null ? _motorInput.SteerInput : 0f;
+        float speed = _rb.linearVelocity.magnitude;
+        Vector3 groundNormal = GetApproximateGroundNormal();
+
+        // Constrain steering based on estimated max speed
+        float effectiveSteerAngle = Mathf.Lerp(_maxSteerAngle, _minSteerAngle, Mathf.Clamp01(speed / _estimatedMaxSpeed));
+        float currentSteerAngle = steerInput * effectiveSteerAngle;
+
+        // Log only if steering angle is more than 10 degrees (absolute)
+        if (Mathf.Abs(currentSteerAngle) > 10f)
+        {
+            Debug.Log($"[MotorMovement] Current Steering Angle: {currentSteerAngle:F2} degrees");
+        }
+
+        // 1. Rotate the front wheel based on steering input
         if (_frontWheel != null && _rearWheel != null)
         {
-            Vector3 groundNormal = GetApproximateGroundNormal();
-            float frontHeight = _frontWheel.position.y;
-            float rearHeight = _rearWheel.position.y;
-
-            Debug.Log($"Ground Normal: {groundNormal}, Front Tire Height: {frontHeight}, Rear Tire Height: {rearHeight}");
+            Vector3 wheelDir = (_frontWheel.position - _rearWheel.position).normalized;
+            Quaternion steerRot = Quaternion.AngleAxis(currentSteerAngle, groundNormal);
+            _frontWheel.rotation = steerRot * Quaternion.LookRotation(wheelDir, groundNormal);
         }
+
+        // 2. Smoothly rotate the bike body to follow the front wheel's direction ONLY if accelerating
+        float accelerationInput = _motorInput != null ? _motorInput.AccelerationInput : 0f;
+        if (_frontWheel != null && accelerationInput > 0f)
+        {
+            Vector3 targetForward = _frontWheel.forward;
+            Quaternion targetRotation = Quaternion.LookRotation(
+                Vector3.ProjectOnPlane(targetForward, groundNormal),
+                groundNormal
+            );
+            _rb.MoveRotation(Quaternion.RotateTowards(_rb.rotation, targetRotation, _steerSpeed * Time.fixedDeltaTime));
+        }
+    }
+
+    void HandleAcceleration()
+    {
+        float accelerationInput = _motorInput != null ? _motorInput.AccelerationInput : 0f;
+        if (accelerationInput <= 0f)
+            return;
+
+        Vector3 groundNormal = GetApproximateGroundNormal();
+        Vector3 forward = Vector3.ProjectOnPlane(transform.forward, groundNormal).normalized;
+        float engineForce = accelerationInput * _motorForce;
+
+        // Apply force at the rear wheel position for realism
+        if (_rearWheel != null)
+            _rb.AddForceAtPosition(forward * engineForce, _rearWheel.position, ForceMode.Force);
+        else
+            _rb.AddForce(forward * engineForce, ForceMode.Force);
+    }
+
+    void HandleBrake()
+    {
+        float brakeInput = _motorInput != null ? _motorInput.BrakeInput : 0f;
+        if (brakeInput <= 0f)
+            return;
+
+        Vector3 velocity = _rb.linearVelocity;
+        if (velocity.sqrMagnitude < 0.01f)
+            return;
+
+        Vector3 brakeForce = -velocity.normalized * _brakeForce;
+        _rb.AddForce(brakeForce, ForceMode.Force);
+    }
+
+    void ApplyLateralFriction()
+    {
+        Vector3 groundNormal = GetApproximateGroundNormal();
+        Vector3 forward = Vector3.ProjectOnPlane(transform.forward, groundNormal).normalized;
+        Vector3 right = Vector3.Cross(groundNormal, forward).normalized;
+
+        Vector3 velocity = _rb.linearVelocity;
+        float lateralSpeed = Vector3.Dot(velocity, right);
+        Vector3 lateralVelocity = right * lateralSpeed;
+
+        _rb.linearVelocity -= lateralVelocity * lateralFriction;
+    }
+
+    void ApplySteeringSpeedReduction()
+    {
+        float steerAmount = Mathf.Abs(_motorInput?.SteerInput ?? 0f);
+        if (steerAmount < 0.01f)
+            return;
+
+        float reductionFactor = Mathf.Lerp(_minSteeringSpeedReduction, _maxSteeringSpeedReduction, steerAmount);
+        _rb.linearVelocity *= reductionFactor;
     }
 
     private void LateUpdate()
@@ -116,20 +153,11 @@ public class MotorMovement : MonoBehaviour
 
         Vector3 frontPos = _frontWheel.position;
         Vector3 rearPos = _rearWheel.position;
-
-        // The direction from rear to front wheel
         Vector3 wheelDir = (frontPos - rearPos).normalized;
-
-        // The right vector of the bike (perpendicular to wheel direction and up)
         Vector3 bikeRight = Vector3.Cross(wheelDir, Vector3.up).normalized;
-
-        // The ground normal is perpendicular to both the wheel direction and the vector from rear to front projected onto the XZ plane
         Vector3 groundNormal = Vector3.Cross(wheelDir, bikeRight).normalized;
-
-        // Ensure the normal points upwards
         if (groundNormal.y < 0)
             groundNormal = -groundNormal;
-
         return groundNormal;
     }
 }
