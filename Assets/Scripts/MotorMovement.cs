@@ -140,9 +140,13 @@ public class MotorMovement : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (_rb.linearVelocity.sqrMagnitude > 0.01f && _visualBody != null)
+        if (_visualBody != null)
         {
-            _visualBody.rotation = _rb.rotation;
+            _visualBody.rotation = Quaternion.Lerp(
+                _visualBody.rotation,
+                _rb.rotation,
+                rotationSmooth * Time.deltaTime
+            );
         }
     }
 
