@@ -6,6 +6,7 @@ public class DemoCameraSwitching : MonoBehaviour
     [SerializeField] GameObject _motorCamera;
     [SerializeField] GameObject _walkCamera;
     [SerializeField] InputActionReference ToggleCamera;
+    [SerializeField] bool _enableToggleCamera = true;
 
     private bool _motorCamActive = true;
 
@@ -15,7 +16,7 @@ public class DemoCameraSwitching : MonoBehaviour
     }
     void Update()
     {
-        if (ToggleCamera.action.WasPerformedThisFrame())
+        if (ToggleCamera.action.WasPerformedThisFrame() && _enableToggleCamera)
         {
             _motorCamActive = !_motorCamActive;
             SetCamera(_motorCamActive);
