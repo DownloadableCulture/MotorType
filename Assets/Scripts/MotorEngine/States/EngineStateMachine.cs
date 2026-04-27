@@ -4,10 +4,12 @@ public class EngineStateMachine
 {
     private IEngineState _currentState;
     private readonly MotorMovement _motor;
+    private readonly EngineSound _engineSound;
 
-    public EngineStateMachine(MotorMovement motor)
+    public EngineStateMachine(MotorMovement motor, EngineSound engineSound)
     {
         _motor = motor;
+        _engineSound = engineSound;
         SetState(new EngineIdleState());
     }
 
@@ -16,11 +18,11 @@ public class EngineStateMachine
         Debug.Log($"[EngineStateMachine] Switching from {_currentState?.GetType().Name ?? "None"} to {newState.GetType().Name}");
         _currentState?.Exit();
         _currentState = newState;
-        _currentState?.Enter();
+        _currentState?.Enter(_engineSound);
     }
 
     public void Update()
     {
-        _currentState?.UpdateState(this, _motor);
+        _currentState?.UpdateState(this, _motor, _engineSound);
     }
 }

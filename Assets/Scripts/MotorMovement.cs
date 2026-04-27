@@ -36,7 +36,9 @@ public class MotorMovement : MonoBehaviour
         _rb.interpolation = RigidbodyInterpolation.Interpolate;
         _brakeForce = _motorForce * _breakModifier;
         _motorInput = _motorInputComponent;
-        _engineStateMachine = new EngineStateMachine(this);
+
+        var engineSound = GetComponent<EngineSound>();
+        _engineStateMachine = new EngineStateMachine(this, engineSound);
 
         // Calculate and print estimated max speed
         _estimatedMaxSpeed = (_rb.linearDamping > 0f ? _motorForce / _rb.linearDamping : float.PositiveInfinity) - _speedReductionFactor;
