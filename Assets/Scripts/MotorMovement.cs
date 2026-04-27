@@ -5,6 +5,7 @@ public class MotorMovement : MonoBehaviour
     [Header("References")]
     [SerializeField] MotorInput _motorInputComponent;
     private IMotorInput _motorInput;
+    private EngineStateMachine _engineStateMachine;
 
     [SerializeField] Transform _frontWheel;
     [SerializeField] Transform _rearWheel;
@@ -14,12 +15,15 @@ public class MotorMovement : MonoBehaviour
     [SerializeField] float _motorForce = 100f;
     [SerializeField] float _steerSpeed = 40f;
     [SerializeField] float _maxSteerAngle = 45f;
-    [SerializeField] float _minSteerAngle = 10f; // Now serialized
+    [SerializeField] float _minSteerAngle = 10f;
     [SerializeField, Range(1.5f, 3f)] float _breakModifier = 2f;
     [SerializeField, Range(1f, 20f)] float rotationSmooth = 10f;
     [SerializeField, Range(0f, 1f)] float lateralFriction = 0.85f;
     [SerializeField, Range(0.8f, 1.0f)] float _maxSteeringSpeedReduction = 0.98f;
     [SerializeField, Range(0.95f, 1.0f)] float _minSteeringSpeedReduction = 1.0f;
+
+    public float CurrentSpeed { get; private set; }
+    public float PreviousSpeed { get; private set; }
 
     private float _brakeForce;
     private Rigidbody _rb;
@@ -32,6 +36,7 @@ public class MotorMovement : MonoBehaviour
         _rb.interpolation = RigidbodyInterpolation.Interpolate;
         _brakeForce = _motorForce * _breakModifier;
         _motorInput = _motorInputComponent;
+        _engineStateMachine = new EngineStateMachine(this);
 
         // Calculate and print estimated max speed
         _estimatedMaxSpeed = (_rb.linearDamping > 0f ? _motorForce / _rb.linearDamping : float.PositiveInfinity) - _speedReductionFactor;
@@ -40,12 +45,23 @@ public class MotorMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        PreviousSpeed = CurrentSpeed;
+
         HandleSteering();
         HandleAcceleration();
         HandleBrake();
         ApplyLateralFriction();
         ApplySteeringSpeedReduction();
+
+        CalculateCurrentSpeed();
+        _engineStateMachine.Update();
     }
+
+    void CalculateCurrentSpeed()
+        {
+            CurrentSpeed = _rb != null ? _rb.linearVelocity.magnitude : 0f;
+            //Debug.Log($"[MotorMovement] Current Speed: {CurrentSpeed:F2}");
+        }
 
     void HandleSteering()
     {
@@ -60,7 +76,7 @@ public class MotorMovement : MonoBehaviour
         // Log only if steering angle is more than 10 degrees (absolute)
         if (Mathf.Abs(currentSteerAngle) > 10f)
         {
-            Debug.Log($"[MotorMovement] Current Steering Angle: {currentSteerAngle:F2} degrees");
+            //Debug.Log($"[MotorMovement] Current Steering Angle: {currentSteerAngle:F2} degrees");
         }
 
         // 1. Rotate the front wheel based on steering input
