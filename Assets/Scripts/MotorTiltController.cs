@@ -13,7 +13,7 @@ public class MotorTiltController : MonoBehaviour
     }
 
 
-    void Update()
+    void LateUpdate()
     {
         float targetTilt = _steeringWheel.CurrentSteerValue * _maxTiltAngle;
 
