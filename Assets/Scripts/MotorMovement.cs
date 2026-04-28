@@ -17,7 +17,6 @@ public class MotorMovement : MonoBehaviour
     [SerializeField] float _maxSteerAngle = 45f;
     [SerializeField] float _minSteerAngle = 10f;
     [SerializeField, Range(1.5f, 3f)] float _breakModifier = 2f;
-    [SerializeField, Range(1f, 20f)] float rotationSmooth = 10f;
     [SerializeField, Range(0f, 1f)] float lateralFriction = 0.85f;
     [SerializeField, Range(0.8f, 1.0f)] float _maxSteeringSpeedReduction = 0.98f;
     [SerializeField, Range(0.95f, 1.0f)] float _minSteeringSpeedReduction = 1.0f;
@@ -29,6 +28,7 @@ public class MotorMovement : MonoBehaviour
     private Rigidbody _rb;
     private readonly float _speedReductionFactor = 12f;
     private float _estimatedMaxSpeed;
+    private VisualTransformBuffer _visualTransformBuffer;
 
     void Awake()
     {
@@ -39,6 +39,12 @@ public class MotorMovement : MonoBehaviour
 
         var engineSound = GetComponent<EngineSound>();
         _engineStateMachine = new EngineStateMachine(this, engineSound);
+
+        _visualTransformBuffer = GetComponent<VisualTransformBuffer>();
+        if (_visualTransformBuffer == null && _visualBody != null)
+        {
+            _visualTransformBuffer = gameObject.AddComponent<VisualTransformBuffer>();
+        }
 
         // Calculate and print estimated max speed
         _estimatedMaxSpeed = (_rb.linearDamping > 0f ? _motorForce / _rb.linearDamping : float.PositiveInfinity) - _speedReductionFactor;
@@ -57,13 +63,15 @@ public class MotorMovement : MonoBehaviour
 
         CalculateCurrentSpeed();
         _engineStateMachine.Update();
+
+        // Capture physics state at the end of FixedUpdate for visual interpolation
+        _visualTransformBuffer?.CapturePhysicsState();
     }
 
     void CalculateCurrentSpeed()
-        {
-            CurrentSpeed = _rb != null ? _rb.linearVelocity.magnitude : 0f;
-            //Debug.Log($"[MotorMovement] Current Speed: {CurrentSpeed:F2}");
-        }
+    {
+        CurrentSpeed = _rb != null ? _rb.linearVelocity.magnitude : 0f;
+    }
 
     void HandleSteering()
     {
@@ -74,12 +82,6 @@ public class MotorMovement : MonoBehaviour
         // Constrain steering based on estimated max speed
         float effectiveSteerAngle = Mathf.Lerp(_maxSteerAngle, _minSteerAngle, Mathf.Clamp01(speed / _estimatedMaxSpeed));
         float currentSteerAngle = steerInput * effectiveSteerAngle;
-
-        // Log only if steering angle is more than 10 degrees (absolute)
-        if (Mathf.Abs(currentSteerAngle) > 10f)
-        {
-            //Debug.Log($"[MotorMovement] Current Steering Angle: {currentSteerAngle:F2} degrees");
-        }
 
         // 1. Rotate the front wheel based on steering input
         if (_frontWheel != null && _rearWheel != null)
@@ -154,18 +156,6 @@ public class MotorMovement : MonoBehaviour
 
         float reductionFactor = Mathf.Lerp(_minSteeringSpeedReduction, _maxSteeringSpeedReduction, steerAmount);
         _rb.linearVelocity *= reductionFactor;
-    }
-
-    private void LateUpdate()
-    {
-        if (_visualBody != null)
-        {
-            _visualBody.rotation = Quaternion.Lerp(
-                _visualBody.rotation,
-                _rb.rotation,
-                rotationSmooth * Time.deltaTime
-            );
-        }
     }
 
     private Vector3 GetApproximateGroundNormal()
