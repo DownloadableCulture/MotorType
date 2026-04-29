@@ -38,7 +38,10 @@ public class MotorMovement : MonoBehaviour
         _motorInput = _motorInputComponent;
 
         var engineSound = GetComponent<EngineSound>();
-        _engineStateMachine = new EngineStateMachine(this, engineSound);
+        if (engineSound != null)
+        {
+            _engineStateMachine = new EngineStateMachine(this, engineSound);
+        }
 
         _visualTransformBuffer = GetComponent<VisualTransformBuffer>();
         if (_visualTransformBuffer == null && _visualBody != null)
@@ -62,7 +65,7 @@ public class MotorMovement : MonoBehaviour
         ApplySteeringSpeedReduction();
 
         CalculateCurrentSpeed();
-        _engineStateMachine.Update();
+        _engineStateMachine?.Update();
 
         // Capture physics state at the end of FixedUpdate for visual interpolation
         _visualTransformBuffer?.CapturePhysicsState();
