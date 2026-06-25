@@ -6,6 +6,8 @@ using UnityEngine;
 /// </summary>
 public class BPMClock : MonoBehaviour
 {
+    public static BPMClock Instance { get; private set; }
+
     [Header("BPM Settings")]
     [SerializeField] float _bpm = 120f;
     [SerializeField] AudioSource _audioSource;
@@ -26,6 +28,18 @@ public class BPMClock : MonoBehaviour
     public delegate void BeatEventHandler(int beatCount);
     public event BeatEventHandler OnBeatTick;
     public event BeatEventHandler OnBarTick;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void OnValidate() => _bpm = Mathf.Max(1f, _bpm);
 
@@ -58,7 +72,7 @@ public class BPMClock : MonoBehaviour
 
         // Update beat in bar every frame for smooth visual feedback
         _beatInBar = (Mathf.FloorToInt(currentBeat) % 4) + 1;
-        
+
         // Update bar progress (0-1 range for the current 4-beat bar)
         _barProgress = currentBeat % 4f / 4f;
 
