@@ -28,16 +28,10 @@ public class MusicManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    void OnDestroy()
-    {
-        if (Instance == this)
-        {
-            Instance = null;
-        }
-    }
-
     void Start()
     {
+        SubscribeToBPMClock();
+        
         if (_playOnStart)
         {
             PlayAssignedTrack();
@@ -54,7 +48,46 @@ public class MusicManager : MonoBehaviour
 
     void OnDisable()
     {
+        UnsubscribeFromBPMClock();
         StopTrack();
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    private void SubscribeToBPMClock()
+    {
+        Debug.Log("[MusicManager] Attempting to subscribe to BPMClock");
+        
+        if (BPMClock.Instance != null)
+        {
+            Debug.Log("[MusicManager] BPMClock.Instance found, subscribing to OnBarTick");
+            BPMClock.Instance.OnBarTick += OnBarTick;
+            Debug.Log("[MusicManager] Successfully subscribed to BPMClock.OnBarTick");
+        }
+        else
+        {
+            Debug.LogError("[MusicManager] BPMClock.Instance is still NULL in Start()!");
+        }
+    }
+
+    private void UnsubscribeFromBPMClock()
+    {
+        if (BPMClock.Instance != null)
+        {
+            BPMClock.Instance.OnBarTick -= OnBarTick;
+            Debug.Log("[MusicManager] Unsubscribed from BPMClock.OnBarTick");
+        }
+    }
+
+    private void OnBarTick(int barNumber)
+    {
+        Debug.Log($"[MusicManager] OnBarTick received: Bar {barNumber}");
     }
 
     public void PlayAssignedTrack()

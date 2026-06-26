@@ -107,7 +107,6 @@ public class BPMClock : MonoBehaviour
 
             if (beatFloor % 4 == 0)
             {
-                Debug.Log($"[BPMClock] Bar Tick: {beatFloor / 4}");
                 OnBarTick?.Invoke(beatFloor / 4);
                 StartMetronome();
             }
