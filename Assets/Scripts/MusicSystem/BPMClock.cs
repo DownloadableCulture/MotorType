@@ -24,6 +24,7 @@ public class BPMClock : MonoBehaviour
     private bool _metronomeStarted;
     private float _lastBpm;
     private float _accumulatedBeat;
+    private int _lastFiredBeat;
 
     private bool _isBpmTransitionActive;
     private float _transitionStartBpm;
@@ -56,6 +57,7 @@ public class BPMClock : MonoBehaviour
         _lastBpm = _bpm;
         _startDspTime = AudioSettings.dspTime;
         _accumulatedBeat = 0f;
+        _lastFiredBeat = -1;
     }
 
     private void OnDisable() => _isRunning = false;
@@ -68,37 +70,44 @@ public class BPMClock : MonoBehaviour
             return;
 
         HandleDebugInput();
+        UpdateBpmState();
+        UpdateBeatState();
+    }
 
+    private void UpdateBpmState()
+    {
         if (_isBpmTransitionActive)
-        {
             UpdateBpmTransition();
-        }
 
-        // Detect inspector changes to BPM during play
         if (_bpm != _lastBpm)
-        {
             SetBPM(_bpm);
-        }
+    }
 
-        double elapsedTime = AudioSettings.dspTime - _startDspTime;
-        float currentBeat = _accumulatedBeat + (float)(elapsedTime / _beatDuration);
+    private void UpdateBeatState()
+    {
+        float currentBeat = GetCurrentBeat();
+        UpdateBeatDisplay(currentBeat);
+        DetectBeatEvents(currentBeat);
+    }
 
-        // Update beat in bar every frame for smooth visual feedback
+    private void UpdateBeatDisplay(float currentBeat)
+    {
         _beatInBar = (Mathf.FloorToInt(currentBeat) % 4) + 1;
-
-        // Update bar progress (0-1 range for the current 4-beat bar)
         _barProgress = currentBeat % 4f / 4f;
+    }
 
-        int previousBeat = Mathf.FloorToInt(currentBeat - (float)(Time.deltaTime / _beatDuration));
+    private void DetectBeatEvents(float currentBeat)
+    {
         int beatFloor = Mathf.FloorToInt(currentBeat);
 
-        if (beatFloor > previousBeat)
+        if (beatFloor > _lastFiredBeat)
         {
             OnBeatTick?.Invoke(beatFloor);
+            _lastFiredBeat = beatFloor;
 
-            // Fire bar event every 4 beats
             if (beatFloor % 4 == 0)
             {
+                Debug.Log($"[BPMClock] Bar Tick: {beatFloor / 4}");
                 OnBarTick?.Invoke(beatFloor / 4);
                 StartMetronome();
             }
@@ -188,6 +197,7 @@ public class BPMClock : MonoBehaviour
         _barProgress = 0f;
         _audioSource?.Stop();
         _isBpmTransitionActive = false;
+        _lastFiredBeat = -1;
     }
 
     private void UpdateBeatDuration() => _beatDuration = 60f / _bpm;
