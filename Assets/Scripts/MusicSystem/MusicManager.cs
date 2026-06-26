@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class MusicManager : MonoBehaviour
 {
+    public static MusicManager Instance { get; private set; }
+
     [Header("Track")]
     [SerializeField] TrackData _trackData;
 
@@ -13,6 +15,26 @@ public class MusicManager : MonoBehaviour
     [SerializeField, Range(0f, 1f)] float _masterVolume = 1f;
 
     readonly List<AudioSource> _activeSources = new List<AudioSource>();
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     void Start()
     {
@@ -38,6 +60,16 @@ public class MusicManager : MonoBehaviour
     public void PlayAssignedTrack()
     {
         PlayTrack(_trackData);
+    }
+
+    public float GetAssignedTrackBpm()
+    {
+        if (_trackData == null)
+        {
+            return 0f;
+        }
+
+        return Mathf.Max(0f, _trackData.TrackBPM);
     }
 
     public void PlayTrack(TrackData trackData)

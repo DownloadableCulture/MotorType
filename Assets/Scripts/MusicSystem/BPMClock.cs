@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// A BPM clock for synchronizing audio playback and managing beat-based timing in 4/4 time.
@@ -23,6 +24,12 @@ public class BPMClock : MonoBehaviour
     private bool _metronomeStarted;
     private float _lastBpm;
     private float _accumulatedBeat;
+
+    private bool _isBpmTransitionActive;
+    private float _transitionStartBpm;
+    private float _transitionTargetBpm;
+    private float _transitionStartBeat;
+    private float _transitionDurationBeats;
 
     // Events
     public delegate void BeatEventHandler(int beatCount);
@@ -60,11 +67,17 @@ public class BPMClock : MonoBehaviour
         if (!_isRunning)
             return;
 
+        HandleDebugInput();
+
+        if (_isBpmTransitionActive)
+        {
+            UpdateBpmTransition();
+        }
+
         // Detect inspector changes to BPM during play
         if (_bpm != _lastBpm)
         {
             SetBPM(_bpm);
-            _lastBpm = _bpm;
         }
 
         double elapsedTime = AudioSettings.dspTime - _startDspTime;
@@ -92,6 +105,14 @@ public class BPMClock : MonoBehaviour
         }
     }
 
+    private void HandleDebugInput()
+    {
+        if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame)
+        {
+            ChangeBPMTo125OverTwoBars();
+        }
+    }
+
     private void StartMetronome()
     {
         if (_metronomeStarted || _metronomeClick == null || _audioSource == null)
@@ -115,10 +136,42 @@ public class BPMClock : MonoBehaviour
         // Reset the timer for the new BPM calculation
         _startDspTime = AudioSettings.dspTime;
 
+        // Keep inspector-change detection in sync
+        _lastBpm = _bpm;
+
         // Adjust metronome pitch to match new BPM
         if (_audioSource != null && _audioSource.isPlaying)
         {
             _audioSource.pitch = _bpm / 120f;
+        }
+    }
+
+    public void ChangeBPMTo125OverTwoBars()
+    {
+        StartBPMTransition(125f, 2f);
+    }
+
+    public void StartBPMTransition(float targetBpm, float bars)
+    {
+        _transitionStartBpm = _bpm;
+        _transitionTargetBpm = Mathf.Max(1f, targetBpm);
+        _transitionStartBeat = GetCurrentBeat();
+        _transitionDurationBeats = Mathf.Max(0.01f, bars) * 4f;
+        _isBpmTransitionActive = true;
+    }
+
+    private void UpdateBpmTransition()
+    {
+        float beatsElapsed = GetCurrentBeat() - _transitionStartBeat;
+        float t = Mathf.Clamp01(beatsElapsed / _transitionDurationBeats);
+        float nextBpm = Mathf.Lerp(_transitionStartBpm, _transitionTargetBpm, t);
+
+        SetBPM(nextBpm);
+
+        if (t >= 1f)
+        {
+            _isBpmTransitionActive = false;
+            SetBPM(_transitionTargetBpm);
         }
     }
 
@@ -134,6 +187,7 @@ public class BPMClock : MonoBehaviour
         _beatInBar = 0;
         _barProgress = 0f;
         _audioSource?.Stop();
+        _isBpmTransitionActive = false;
     }
 
     private void UpdateBeatDuration() => _beatDuration = 60f / _bpm;
