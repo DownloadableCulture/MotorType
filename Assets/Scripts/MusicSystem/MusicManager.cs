@@ -43,10 +43,7 @@ public class MusicManager : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            PlayOnNextBar();
-        }
+        HandleDebugInput();
     }
 
     void OnDisable()
@@ -60,6 +57,22 @@ public class MusicManager : MonoBehaviour
         if (Instance == this)
         {
             Instance = null;
+        }
+    }
+
+    private void HandleDebugInput()
+    {
+        if (Keyboard.current == null)
+            return;
+
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            PlayOnNextBar();
+        }
+
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+        {
+            TransitionToBPMClockTempo();
         }
     }
 
@@ -89,6 +102,27 @@ public class MusicManager : MonoBehaviour
         }
         
         Debug.Log($"[MusicManager] Preloaded {_audioSources.Count} audio sources");
+    }
+
+    private void TransitionToBPMClockTempo()
+    {
+        if (BPMClock.Instance == null)
+        {
+            Debug.LogError("[MusicManager] BPMClock.Instance not found");
+            return;
+        }
+
+        if (_trackData == null)
+        {
+            Debug.LogWarning("[MusicManager] No TrackData assigned, cannot transition BPM");
+            return;
+        }
+
+        float targetBpm = _trackData.TrackBPM;
+        float transitionBars = 2f;
+        
+        BPMClock.Instance.StartBPMTransition(targetBpm, transitionBars);
+        Debug.Log($"[MusicManager] Transitioning BPMClock to {targetBpm} BPM over {transitionBars} bars");
     }
 
     private void SubscribeToBPMClock()
