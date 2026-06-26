@@ -14,7 +14,9 @@ public class MusicManager : MonoBehaviour
     [SerializeField] bool _loop = true;
     [SerializeField, Range(0f, 1f)] float _masterVolume = 1f;
 
-    readonly List<AudioSource> _activeSources = new List<AudioSource>();
+    readonly List<AudioSource> _audioSources = new List<AudioSource>();
+    
+    private bool _playOnNextBar;
 
     void Awake()
     {
@@ -30,6 +32,7 @@ public class MusicManager : MonoBehaviour
 
     void Start()
     {
+        PreloadAudioSources();
         SubscribeToBPMClock();
         
         if (_playOnStart)
@@ -42,7 +45,7 @@ public class MusicManager : MonoBehaviour
     {
         if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            PlayAssignedTrack();
+            PlayOnNextBar();
         }
     }
 
@@ -58,6 +61,34 @@ public class MusicManager : MonoBehaviour
         {
             Instance = null;
         }
+    }
+
+    private void PreloadAudioSources()
+    {
+        if (_trackData == null || _trackData.layers == null)
+            return;
+
+        Debug.Log("[MusicManager] Preloading audio sources");
+        
+        foreach (MusicLayer layer in _trackData.layers)
+        {
+            if (layer == null || layer.clip == null)
+                continue;
+
+            AudioSource source = gameObject.AddComponent<AudioSource>();
+            source.playOnAwake = false;
+            source.clip = layer.clip;
+            source.loop = _loop;
+            source.volume = 0f; // Silent for preloading
+            source.spatialBlend = 0f;
+            source.dopplerLevel = 0f;
+            source.Play();
+            source.Stop();
+            
+            _audioSources.Add(source);
+        }
+        
+        Debug.Log($"[MusicManager] Preloaded {_audioSources.Count} audio sources");
     }
 
     private void SubscribeToBPMClock()
@@ -88,21 +119,24 @@ public class MusicManager : MonoBehaviour
     private void OnBarTick(int barNumber)
     {
         Debug.Log($"[MusicManager] OnBarTick received: Bar {barNumber}");
+        
+        if (_playOnNextBar)
+        {
+            Debug.Log($"[MusicManager] Starting playback on bar {barNumber}");
+            PlayAssignedTrack();
+            _playOnNextBar = false;
+        }
+    }
+
+    private void PlayOnNextBar()
+    {
+        Debug.Log("[MusicManager] Space pressed - scheduling playback for next bar");
+        _playOnNextBar = true;
     }
 
     public void PlayAssignedTrack()
     {
         PlayTrack(_trackData);
-    }
-
-    public float GetAssignedTrackBpm()
-    {
-        if (_trackData == null)
-        {
-            return 0f;
-        }
-
-        return Mathf.Max(0f, _trackData.TrackBPM);
     }
 
     public void PlayTrack(TrackData trackData)
@@ -121,6 +155,7 @@ public class MusicManager : MonoBehaviour
             return;
         }
 
+        // Reuse preloaded sources
         for (int i = 0; i < trackData.layers.Length; i++)
         {
             MusicLayer layer = trackData.layers[i];
@@ -129,47 +164,44 @@ public class MusicManager : MonoBehaviour
                 continue;
             }
 
-            AudioSource source = gameObject.AddComponent<AudioSource>();
-            source.playOnAwake = false;
+            AudioSource source = i < _audioSources.Count ? _audioSources[i] : null;
+            
+            if (source == null)
+            {
+                Debug.LogWarning($"[MusicManager] Not enough preloaded sources for layer {i}");
+                continue;
+            }
+
             source.clip = layer.clip;
             source.loop = _loop;
             source.volume = Mathf.Clamp01(_masterVolume * layer.volume);
-            source.spatialBlend = 0f;
-            source.dopplerLevel = 0f;
             source.Play();
 
-            _activeSources.Add(source);
-        }
-
-        if (_activeSources.Count == 0)
-        {
-            Debug.LogWarning($"[MusicManager] Track '{trackData.trackName}' has no valid audio clips.");
+            Debug.Log($"[MusicManager] Playing layer {i}: {layer.clip.name}");
         }
     }
 
     public void StopTrack()
     {
-        for (int i = 0; i < _activeSources.Count; i++)
+        foreach (AudioSource source in _audioSources)
         {
-            AudioSource source = _activeSources[i];
-            if (source == null)
+            if (source != null && source.isPlaying)
             {
-                continue;
-            }
-
-            source.Stop();
-
-            if (Application.isPlaying)
-            {
-                Destroy(source);
-            }
-            else
-            {
-                DestroyImmediate(source);
+                source.Stop();
             }
         }
 
-        _activeSources.Clear();
+        Debug.Log("[MusicManager] All tracks stopped");
+    }
+
+    public float GetAssignedTrackBpm()
+    {
+        if (_trackData == null)
+        {
+            return 0f;
+        }
+
+        return Mathf.Max(0f, _trackData.TrackBPM);
     }
 
     void OnValidate()
