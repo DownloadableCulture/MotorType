@@ -65,11 +65,6 @@ public class MusicManager : MonoBehaviour
         if (Keyboard.current == null)
             return;
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            PlayOnNextBar();
-        }
-
         if (Keyboard.current.tKey.wasPressedThisFrame)
         {
             TransitionToBPMClockTempo();
@@ -131,9 +126,10 @@ public class MusicManager : MonoBehaviour
         
         if (BPMClock.Instance != null)
         {
-            Debug.Log("[MusicManager] BPMClock.Instance found, subscribing to OnBarTick");
+            Debug.Log("[MusicManager] BPMClock.Instance found, subscribing to OnBarTick and OnBpmTransitionCompleted");
             BPMClock.Instance.OnBarTick += OnBarTick;
-            Debug.Log("[MusicManager] Successfully subscribed to BPMClock.OnBarTick");
+            BPMClock.Instance.OnBpmTransitionCompleted += OnBpmTransitionCompleted;
+            Debug.Log("[MusicManager] Successfully subscribed to BPMClock events");
         }
         else
         {
@@ -146,7 +142,8 @@ public class MusicManager : MonoBehaviour
         if (BPMClock.Instance != null)
         {
             BPMClock.Instance.OnBarTick -= OnBarTick;
-            Debug.Log("[MusicManager] Unsubscribed from BPMClock.OnBarTick");
+            BPMClock.Instance.OnBpmTransitionCompleted -= OnBpmTransitionCompleted;
+            Debug.Log("[MusicManager] Unsubscribed from BPMClock events");
         }
     }
 
@@ -160,6 +157,12 @@ public class MusicManager : MonoBehaviour
             PlayAssignedTrack();
             _playOnNextBar = false;
         }
+    }
+
+    private void OnBpmTransitionCompleted(float startBpm, float endBpm)
+    {
+        Debug.Log($"[MusicManager] BPM transition completed: {startBpm} BPM to {endBpm} BPM");
+        _playOnNextBar = true;
     }
 
     private void PlayOnNextBar()

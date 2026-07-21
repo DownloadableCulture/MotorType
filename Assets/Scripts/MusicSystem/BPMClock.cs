@@ -34,8 +34,10 @@ public class BPMClock : MonoBehaviour
 
     // Events
     public delegate void BeatEventHandler(int beatCount);
+    public delegate void BpmTransitionEventHandler(float startBpm, float endBpm);
     public event BeatEventHandler OnBeatTick;
     public event BeatEventHandler OnBarTick;
+    public event BpmTransitionEventHandler OnBpmTransitionCompleted;
 
     private void Awake()
     {
@@ -69,7 +71,7 @@ public class BPMClock : MonoBehaviour
         if (!_isRunning)
             return;
 
-        HandleDebugInput();
+        //HandleDebugInput();
         UpdateBpmState();
         UpdateBeatState();
     }
@@ -113,13 +115,13 @@ public class BPMClock : MonoBehaviour
         }
     }
 
-    private void HandleDebugInput()
-    {
-        if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame)
-        {
-            ChangeBPMTo125OverTwoBars();
-        }
-    }
+    //private void HandleDebugInput()
+    //{
+    //    if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame)
+    //    {
+    //        ChangeBPMTo125OverTwoBars();
+    //    }
+    //}
 
     private void StartMetronome()
     {
@@ -180,7 +182,14 @@ public class BPMClock : MonoBehaviour
         {
             _isBpmTransitionActive = false;
             SetBPM(_transitionTargetBpm);
+            OnBpmTransitionCompleted?.Invoke(_transitionStartBpm, _transitionTargetBpm);
+            LogBpmTransitionCompleted(_transitionStartBpm, _transitionTargetBpm);
         }
+    }
+
+    private void LogBpmTransitionCompleted(float startBpm, float endBpm)
+    {
+        Debug.Log($"[BPMClock] BPM transition completed: {startBpm} to {endBpm}");
     }
 
     public float GetBPM() => _bpm;

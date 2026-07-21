@@ -20,9 +20,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Scene3WIP.unity
     guid: 356f29a92befd324f9d440083562b09d
-  - enabled: 1
+  - enabled: 0
     path: Assets/DemoScene 25 04 2026.unity
     guid: 45d2b35a060cfdb46bb2f4d01cb8e098
+  - enabled: 1
+    path: Assets/Scenes/OST System.unity
+    guid: 1d13013734a7dd74c9e09852925d6998
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: bc3665732954bb5419e706eabee3ec57, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 3355707ca4fc6f54cbd4bceb02b929e1, type: 3}
